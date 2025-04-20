@@ -81,3 +81,12 @@ h1, h2 {
     border: 2px solid #dc3545 !important;
 }
 
+.footer-author {
+    position: fixed;
+    bottom: 10px;
+    left: 15px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-style: italic;
+    z-index: 9999;
+}
