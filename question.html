@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Question {{ qid + 1 }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-light bg-white shadow-sm mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">🏠 Home</a>
+        <span class="navbar-text">Question {{ qid + 1 }} of {{ total }}</span>
+    </div>
+</nav>
+
+<div class="container">
+    <form method="post" action="{{ url_for('show_question', qid=qid + 1) }}">
+        <div class="card mb-4">
+            <div class="card-header"><strong>Q{{ qid + 1 }}:</strong> {{ question.question }}</div>
+            <div class="card-body">
+                {% for opt in question.options %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="q{{ loop.index0 }}" name="answer"
+                           value="{{ opt }}" {% if selected == opt %}checked{% endif %} required>
+                    <label class="form-check-label" for="q{{ loop.index0 }}">{{ opt }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            {% if qid > 0 %}
+            <a class="btn btn-secondary" href="{{ url_for('show_question', qid=qid - 1) }}">← Previous</a>
+            {% else %}
+            <span></span>
+            {% endif %}
+
+            {% if qid < total - 1 %}
+            <button class="btn btn-primary" type="submit">Next →</button>
+            {% else %}
+            <button class="btn btn-success" formaction="{{ url_for('show_results') }}" type="submit">Submit Quiz</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+</body>
+</html>
