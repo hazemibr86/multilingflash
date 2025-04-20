@@ -1,18 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 import random
+import os
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'  # You can change this
+app.secret_key = 'your-secret-key'
 
-# Load data
+# Load verbs
 df = pd.read_excel("verbs.xlsx")
 df = df.drop(columns=["#"]).reset_index(drop=True)
 languages = df.columns.tolist()
 
-# Divide into groups
+# Grouping
 verbs_per_group = 15
-groups = [(i * verbs_per_group, min((i + 1) * verbs_per_group, len(df))) for i in range((len(df) + verbs_per_group - 1) // verbs_per_group)]
+groups = [
+    (i * verbs_per_group, min((i + 1) * verbs_per_group, len(df)))
+    for i in range((len(df) + verbs_per_group - 1) // verbs_per_group)
+]
 
 
 @app.route('/')
@@ -66,13 +70,15 @@ def show_question(qid):
     if qid < 0 or qid >= len(questions):
         return redirect(url_for('show_results'))
 
-    return render_template('question.html',
-                           qid=qid,
-                           question=questions[qid],
-                           total=len(questions),
-                           selected=answers[qid],
-                           source_lang=session.get('source_lang'),
-                           target_lang=session.get('target_lang'))
+    return render_template(
+        'question.html',
+        qid=qid,
+        question=questions[qid],
+        total=len(questions),
+        selected=answers[qid],
+        source_lang=session.get('source_lang'),
+        target_lang=session.get('target_lang')
+    )
 
 
 @app.route('/quiz/submit', methods=['POST'])
@@ -98,8 +104,6 @@ def show_results():
 
     return render_template('results.html', score=score, total=len(questions), results=results)
 
-
-import os
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
